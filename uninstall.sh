@@ -3,14 +3,13 @@
 set -euo pipefail
 
 INSTALLDIR="$HOME/bin"
-CONFIGDIR="${XDG_CONFIG_HOME:-$HOME/.config}/Spotify-AdKiller"
+CONFIGDIR="${XDG_CONFIG_HOME:-$HOME/.config}/Spotify-AdMuter"
 APPDIR="${XDG_DATA_HOME:-$HOME/.local/share}/applications"
 
-echo "This script completely removes Spotify-AdKiller, including its configuration"
+echo "This script completely removes Spotify-AdMuter, except for its configuration file in ${CONFIGDIR}"
 
-rm -rfv "$INSTALLDIR/spotify-adkiller.sh" \
+rm -rfv "$INSTALLDIR/spotify-admuter.sh" \
         "$INSTALLDIR/spotify-wrapper.sh" \
-        "$CONFIGDIR/Spotify-AdKiller.cfg" \
-        "$APPDIR/Spotify (AdKiller).desktop"
+        "$APPDIR/Spotify (AdMuter).desktop"
 
 rmdir --ignore-fail-on-non-empty "$INSTALLDIR" "$CONFIGDIR"

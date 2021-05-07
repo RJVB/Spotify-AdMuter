@@ -4,7 +4,7 @@
 # CHANGELOG: https://github.com/SecUpwN/Spotify-AdKiller/blob/master/CHANGELOG.md
 # Feel free to contribute improvements and suggestions to this funky script!
 
-# Installation script for Spotify-AdKiller
+# Installation script for Spotify-AdMuter
 
 # Please make sure to consult the attached README file before using this script
 
@@ -45,13 +45,13 @@ readonly END="\033[0m"
 # VAR
 
 INSTALLDIR="$HOME/bin"
-CONFIGDIR="${XDG_CONFIG_HOME:-$HOME/.config}/Spotify-AdKiller"  # try to follow XDG specs
+CONFIGDIR="${XDG_CONFIG_HOME:-$HOME/.config}/Spotify-AdMuter"  # try to follow XDG specs
 APPDIR="${XDG_DATA_HOME:-$HOME/.local/share}/applications"      # try to follow XDG specs
 
-SCRIPT="spotify-adkiller.sh"
+SCRIPT="spotify-admuter.sh"
 WRAPPER="spotify-wrapper.sh"
-CONFIGFILE="Spotify-AdKiller.cfg"
-DESKTOPFILE="Spotify (AdKiller).desktop"
+CONFIGFILE="Spotify-AdMuter.cfg"
+DESKTOPFILE="Spotify (AdMuter).desktop"
 
 INFOMSG1="\e[1;93mWARNING: $INSTALLDIR is not part of your PATH. Your current PATH:
 
@@ -64,7 +64,7 @@ This will update your PATH and make the script available to your system.
 $INSTALLDIR to your PATH variable. 
 
 Alternatively you could abort this installation and follow the instructions in the
-README to manually install Spotify AdKiller.
+README to manually install Spotify AdMuter.
 
 \e[1;93mDo you want to proceed with the installation? \e[0m(y/n)"
 

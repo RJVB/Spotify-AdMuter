@@ -1,12 +1,12 @@
-# Spotify-AdKiller (for LINUX)
+# Spotify-AdMuter (for LINUX)
 
 Your Party with [Spotify](https://www.spotify.com) - without ads!
 
-[![Spotify-AdKiller](https://github.com/SecUpwN/Spotify-AdKiller/raw/master/Spotify-AdKiller.png)](https://github.com/SecUpwN/Spotify-AdKiller)
+[![Spotify-AdMuter](https://github.com/RJVB/Spotify-AdMuter/raw/master/Spotify-AdMuter.png)](https://github.com/RJVB/Spotify-AdMuter)
 
-We all love Spotify, but sometimes people (like us) want to throw a party without having to listen to interrupting ads before having bought [Spotify Premium](https://www.spotify.com/premium/). Well, with this killer project, now you can!
+We all love Spotify, but sometimes people (like us) want to throw a party without having to listen to interrupting ads before having bought [Spotify Premium](https://www.spotify.com/premium/). Well, with this muter project, now you can! Ads are still served, so Spotify are not prevented from fulfulling its legally binding promises to their sponsors. This script just automates what everyone could (and is entitled to, IMHO) do: mute sound while ads play, or listen to something else in the meantime.
 
-**This is for testing purposes ONLY!** Spotify is a fantastic service and worth every penny. This script is **NOT** meant to circumvent buying premium! Please do consider switching to premium to support Spotify - especially if you're going to use it on mobile. If the script does not work for you, help us improve it!
+**Officially, this is for testing purposes ONLY!** Spotify is a fantastic service and worth every penny. This script is **NOT** meant to circumvent buying premium! Please do consider listening attentively to every ad, or switching to premium to support Spotify - especially if you're going to use it on mobile. But if the script does not work for you, help us improve it!
 
 ### Dependencies
 
@@ -15,11 +15,9 @@ Utilities used in the script:
   - xprop
   - pacmd
   - notify-send
-  - **xdotool**
+  - xdotool
 
-New dependencies are highlighted in bold. Please make sure to install these before upgrading the script.
-
-You will also need to have one of the following audio/media players installed:
+You will also need to have one of the following audio/media players installed, in case you want to use anything other than the default "simple" muting method:
 
   - mpv
   - vlc
@@ -42,36 +40,28 @@ Install all utilities + VLC on **[Ubuntu](http://www.ubuntu.com/)** with:
 
     sudo apt-get install x11-utils pulseaudio-utils libnotify-bin xdotool vlc
 
-[![Arch Linux](http://www.faderweb.de/img/archlinux.jpg)](http://www.archlinux.org/)
-
-There is an [AUR Package](https://aur.archlinux.org/packages/spotify-adkiller-git/) for  **[Arch Linux](http://www.archlinux.org/)**. To install:
-
-    git clone https://aur.archlinux.org/spotify-adkiller-git.git
-    cd spotify-adkiller-git
-    makepkg -si
-
 ### Installation
 
 **Automated Installation**
 
-Grab the latest release of `Spotify-AdKiller`:
+Grab the latest release of `Spotify-AdMuter`:
 
-    git clone https://github.com/SecUpwN/Spotify-AdKiller.git
+    git clone https://github.com/RJVB/Spotify-AdMuter.git
 
 Run the provided installer:
 
-    cd Spotify-AdKiller
+    cd Spotify-AdMuter
     ./install.sh
 
 **Troubleshooting**
 
-- `Spotify-AdKiller` has been tested to work with Spotify 0.9.x. Support for the 1.0.x beta releases has been implemented, but still needs more testing. If you run into any bugs while using `Spotify-AdKiller` with a Spotify beta release please report them on the bug tracker.
+- `Spotify-AdMuter` has been tested to work with Spotify 0.9.x. Support for the 1.0.x beta releases has been implemented, but still needs more testing. If you run into any bugs while using `Spotify-AdMuter` with a Spotify beta release please report them on the bug tracker.
 
 - If you've installed Spotify from any source other than the official repository please make sure that the `spotify` executable is in your `PATH`.
 
     You can create a symbolic link, if necessary (e.g. linking `my-spotify` to `spotify` if you are using the user installation of [spotify-make](https://github.com/leamas/spotify-make)).
 
-- The installer script will install `Spotify-AdKiller` to `$HOME/bin`, which should be recognized by Ubuntu and openSUSE.
+- The installer script will install `Spotify-AdMuter` to `$HOME/bin`, which should be recognized by Ubuntu and openSUSE.
 
 - If `$HOME/bin` didn't exist before, a relog might be necessary to complete the installation.
 
@@ -82,7 +72,7 @@ Run the provided installer:
 - If GUI and text are too small, you can scale the application by editing the desktop file:
 
         cd /home/<your username>/.local/share/applications
-        sudo gedit Spotify\ \(AdKiller\).desktop
+        sudo gedit Spotify\ \(AdMuter\).desktop
 
     Add `--force-device-scale-factor=2` to scale it with factor 2:
 
@@ -90,21 +80,21 @@ Run the provided installer:
 
 **Manual Installation**
 
-1. Copy `spotify-adkiller.sh` and `spotify-wrapper.sh` to your `PATH` (e.g. `$HOME/bin` or `/usr/local/bin` on openSUSE and Ubuntu) and make both of them executable with `chmod +x spotify-adkiller.sh` and `chmod +x spotify-wrapper.sh`.
+1. Copy `spotify-admuter.sh` and `spotify-wrapper.sh` to your `PATH` (e.g. `$HOME/bin` or `/usr/local/bin` on openSUSE and Ubuntu) and make both of them executable with `chmod +x spotify-admuter.sh` and `chmod +x spotify-wrapper.sh`.
 
-2. Copy `Spotify (AdKiller).desktop` to `$HOME/.local/share/applications` or any other folder your distro reads `.desktop` launchers from (e.g. `/usr/share/applications`, `/usr/local/share/applications`).
+2. Copy `Spotify (AdMuter).desktop` to `$HOME/.local/share/applications` or any other folder your distro reads `.desktop` launchers from (e.g. `/usr/share/applications`, `/usr/local/share/applications`).
 
 The default configuration file will be written automatically on the first startup of the script.
 
 ### Usage
 
-If you installed `Spotify-AdKiller` correctly, a new entry called `Spotify (AdKiller)` should appear in your menu. This launcher will start Spotify in ad-free mode. The script will terminate automatically as soon as Spotify exits. As mentioned before, **this is for testing purposes ONLY** so use this new entry only when your purposes are **testing**.
+If you installed `Spotify-AdMuter` correctly, a new entry called `Spotify (AdMuter)` should appear in your menu. This launcher will start Spotify in ad-free mode. The script will terminate automatically as soon as Spotify exits. As mentioned before, **this is for testing purposes ONLY** so use this new entry only when your purposes are **testing**.
 
 **Important note:** Please make sure you don't have notifications disabled in your Spotify configuration (`ui.track_notifications_enabled=true` in `~/.config/spotify/User/<your username>/prefs`).
 
 ### Settings
 
-The configuration file for `Spotify-AdKiller` is located under `$HOME/.config/Spotify-AdKiller/Spotify-AdKiller.cfg`. There are several settings that control how `Spotify-AdKiller` operates:
+The configuration file for `Spotify-AdMuter` is located under `$HOME/.config/Spotify-AdMuter/Spotify-AdMuter.cfg`. There are several settings that control how `Spotify-AdMuter` operates:
 
 **Modes**
 
@@ -112,14 +102,14 @@ The configuration file for `Spotify-AdKiller` is located under `$HOME/.config/Sp
 
 - `simple`: mute Spotify, unmute when ad is over
 - `interstitial`: mute Spotify, play random local track, stop and unmute when ad is over
-    + If the local track is shorter than the ad, `Spotify-AdKiller` will automatically try to loop it. This will only work with players that support a loop option. If you are planning to use this feature with a custom player make sure to also supply a custom loop option in your configuration file.
+    + If the local track is shorter than the ad, `Spotify-AdMuter` will automatically try to loop it. This will only work with players that support a loop option. If you are planning to use this feature with a custom player make sure to also supply a custom loop option in your configuration file.
 - `continuous`: mute Spotify, play random local track, stop and unmute when track is over
     + You can skip the local track as soon as the ad is over. To do so, simply press Play or Forward/Next in your Spotify client (or use the corresponding hotkeys).
-    + Please note that the `continuous` ad blocking mode works best with tracks that are longer than the average ad duration (≈30-45s). If a custom track ends prematurely or is shorter than the current ad, `Spotify-AdKiller` will switch to the next random local track in line.
+    + Please note that the `continuous` ad blocking mode works best with tracks that are longer than the average ad duration (≈30-45s). If a custom track ends prematurely or is shorter than the current ad, `Spotify-AdMuter` will switch to the next random local track in line.
 
 The default ad blocking mode is `continuous`.
 
-`Spotify-AdKiller` will always fall back to `simple` mode if no local tracks are found and/or if no supported music player is available on the system.
+`Spotify-AdMuter` will always fall back to `simple` mode if no local tracks are found and/or if no supported music player is available on the system.
 
 **Local Playback**
 
@@ -132,11 +122,11 @@ The following settings control local music playback during ads:
 
 **Debug Setting**
 
-You can make the CLI output more verbose and enable the log file by setting `DEBUG` to `1`. The log will be written to `$HOME/.Spotify-AdKiller.log` and replaced each time `Spotify-AdKiller` runs.
+You can make the CLI output more verbose and enable the log file by setting `DEBUG` to `1`. The log will be written to `$HOME/.Spotify-AdMuter.log` and replaced each time `Spotify-AdMuter` runs.
 
 ### Important Notes
 
-Please make sure to always use the provided launcher when running Spotify. Under some circumstances Spotify might remain muted when exiting the application. This is a technical limitation with `PulseAudio`. `Spotify-AdKiller` automatically unmutes Spotify when initially run.
+Please make sure to always use the provided launcher when running Spotify. Under some circumstances Spotify might remain muted when exiting the application. This is a technical limitation with `PulseAudio`. `Spotify-AdMuter` automatically unmutes Spotify when initially run.
 
 If, for some reason, Spotify does remain muted you can use the following command to unmute it manually while it's running:
 
@@ -152,6 +142,6 @@ for i in $(LC_ALL=C pactl list | grep -E '(^Sink Input)|(media.name = \"Spotify\
 
 ### License
 
-Many people have contributed to make our script become what it is today (huge shout-out to the initial creator [pcworld](https://github.com/pcworld)). If you are like us and think that it is very sad when projects die, please accept that all code here is fully licensed under GPL v3+. Have a look at the full [License](https://github.com/SecUpwN/Spotify-AdKiller/blob/master/LICENSE). Contribute pull requests!
+Many people have contributed to make our script become what it is today (huge shout-out to the initial creator [pcworld](https://github.com/pcworld)). If you are like us and think that it is very sad when projects die, please accept that all code here is fully licensed under GPL v3+. Have a look at the full [License](https://github.com/RJVB/Spotify-AdMuter/blob/master/LICENSE). Contribute pull requests!
 
 **This product is not endorsed, certified or otherwise approved in any way by Spotify. Spotify is the registered trade mark of the Spotify Group. Use your brainz prior to formatting your HDD.**

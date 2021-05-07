@@ -4,7 +4,7 @@
 # CHANGELOG: https://github.com/SecUpwN/Spotify-AdKiller/blob/master/CHANGELOG.md
 # Feel free to contribute improvements and suggestions to this funky script!
 
-# Spotify AdKiller main script
+# Spotify AdMuter main script
 
 # Please make sure to consult the attached README file before using this script
 
@@ -32,18 +32,26 @@
 ## VARIABLES
 
 # !! PLEASE DO NOT MODIFY THIS SECTION. USE THE CONFIG_FILE INSTEAD !!
-# !!     DEFAULT CONFIG PATH: "$HOME/.config/Spotify-AdKiller"     !!
+# !!     DEFAULT CONFIG PATH: "$HOME/.config/Spotify-AdMuter"     !!
 
 # config
 
-CONFIG_PATH="${XDG_CONFIG_HOME:-$HOME/.config}/Spotify-AdKiller"
-CONFIG_FILE="$CONFIG_PATH/Spotify-AdKiller.cfg"
+CONFIG_PATH="${XDG_CONFIG_HOME:-$HOME/.config}/Spotify-AdMuter"
+CONFIG_FILE="$CONFIG_PATH/Spotify-AdMuter.cfg"
+OLD_CONFIG_PATH="${XDG_CONFIG_HOME:-$HOME/.config}/Spotify-AdKiller"
+OLD_CONFIG_FILE="Spotify-AdKiller.cfg"
+if [ -d "${OLD_CONFIG_PATH}" -a ! -e "${CONFIG_PATH}" ] ;then
+  mv "${OLD_CONFIG_PATH}" "${CONFIG_PATH}"
+fi
+if [ ! -f "${CONFIG_FILE}" -a -f "${CONFIG_PATH}/${OLD_CONFIG_FILE}" ] ;then
+  mv "${CONFIG_PATH}/${OLD_CONFIG_FILE}" "${CONFIG_FILE}"
+fi
 
 # settings
 
 BINARY="spotify"
 
-# initialization
+# initialisation
 
 INITIALRUN=1
 ADMUTE=0
@@ -52,8 +60,8 @@ LOCPLAY=0
 PAUSESIGNAL=0
 ADFINISHED=0
 
-PACMD=pacmd
-PACTL=pactl
+PACMD=/opt/local/bin/pacmd
+PACTL=/opt/local/bin/pactl
 
 ## FUNCTIONS
 
@@ -65,7 +73,7 @@ debuginfo(){
 }
 
 notify_send(){
-    notify-send -i spotify-client "Spotify-AdKiller" "$1"
+    notify-send -i spotify-client "Spotify-AdMuter" "$1"
 }
 
 report_error(){
@@ -359,7 +367,7 @@ automute_continuous(){
     elif [[ "$AD" = "0" && "$PAUSED" = "1"  && "$ADMUTE" = "1" &&  \
       "$LOCPLAY" = "1" && "$PAUSESIGNAL" = "0" && "$ADFINISHED" = "1" ]]
       then
-          echo "## Paused by AdKiller ##"
+          echo "## Paused by AdMuter ##"
           PAUSESIGNAL=1
           spotify_dbus Pause
 
