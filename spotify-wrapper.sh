@@ -39,7 +39,7 @@
 
 ADKILLER="spotify-adkiller.sh"
 WMCLASS="Spotify"
-LOGFILE="$HOME/.Spotify-AdKiller.log"
+LOGFILE="$XDG_RUNTIME_DIR/.Spotify-AdKiller.log"
 
 # DNS-BLOCK
 
@@ -68,7 +68,7 @@ CONFIG_DEFAULT=\
 ## Please make sure to double-quote all custom values   ##
 ##                                                      ##
 
-CUSTOM_MODE=""
+CUSTOM_MODE="simple"
 # ad block mode. possible values:
 # - simple        — mute Spotify, unmute when ad is over
 # - interstitial  — mute Spotify, play random local track, stop and unmute when ad is over
@@ -90,12 +90,12 @@ CUSTOM_MUSIC=""
 # local music directory / track
 # -> set to XDG standard music directory by default
 
-DEBUG="0"
+DEBUG="1"
 # control debug mode
 # - "1" to enable
 # - "0" to disable
 # -> Will make the CLI output more verbose and write a logfile
-#    to "$HOME/.Spotify-AdKiller.log"'
+#    to "$XDG_RUNTIME_DIR/.Spotify-AdKiller.log"'
 
 ## CLI MESSAGES
 
@@ -144,9 +144,9 @@ adkiller_launch(){
       if [[ "$DEBUG" = "1" ]]; then
         echo "$INFOMSG1"
         notify_send "$INFOMSG1"
-        $ADKILLER > "$LOGFILE" 2> /dev/null &
+        $ADKILLER 2>&1 > "$LOGFILE"  &
       else
-        $ADKILLER > /dev/null 2>&1 &
+        $ADKILLER 2>/dev/null  &
       fi
     fi
 }
