@@ -52,6 +52,9 @@ LOCPLAY=0
 PAUSESIGNAL=0
 ADFINISHED=0
 
+PACMD=pacmd
+PACTL=pactl
+
 ## FUNCTIONS
 
 debuginfo(){
@@ -178,7 +181,17 @@ set_mode(){
 }
 
 set_windowid(){
-  WINDOWID=$(xdotool search --classname "$BINARY" | tail -1)
+  WINDOWID=0
+  # Spotify probably has multiple windows open, but there is normally only
+  # one that has a window manager frame (= the toplevel, "actual" window).
+  # Here we just search for the last window that has window manager state
+  # property associated with it.
+  for w in $(xdotool search --classname "$BINARY") ;do
+    if [ "$(xprop -id ${w} WM_STATE)" != "WM_STATE:  not found." ] ;then
+      WINDOWID=${w}
+    fi
+  done
+
   if [[ -z "$WINDOWID" ]]; then
     echo "Spotify not active. Exiting."
     exit 1
@@ -201,33 +214,48 @@ get_track_info(){
 }
 
 get_pactl_info(){
-  pacmd list-sink-inputs | grep -B 25 "application.process.binary = \"$BINARY\""
+  ${PACMD} list-sink-inputs | grep -B 25 "application.process.binary = \"$BINARY\""
 }
 
 get_state(){
-  get_track_info
-
-  # check if track paused
-  debuginfo "$(get_pactl_info)"
-  if get_pactl_info | grep 'state: CORKED' > /dev/null 2>&1; then
-    # wait and recheck
-    sleep 0.75
-    if get_pactl_info | grep 'state: CORKED' > /dev/null 2>&1; then
-      echo "PAUSED:   Yes"
-      PAUSED="1"
-    fi
-    get_track_info
-  else
-    echo "PAUSED:   No"
-    PAUSED="0"
-  fi
-
-  if [[ "$DBUS_TRACK" == "0" ]]; then
-    echo "AD:       Yes"
+  # the main loop already gives us Spotify's window title, from which we can (currently)
+  # detect advertisements playing, without need for querying the information via DBus.
+  # So we do that first.
+  if [ "${XPROPOUTPUT}" = "_NET_WM_NAME(UTF8_STRING) = \"Advertisement\"" ] ;then
+    echo "AD:       Yes (detected from window title (${XPROPOUTPUT}))"
     AD="1"
   else
-    echo "AD:       No"
-    AD="0"
+    debuginfo "Spotify window title; ${XPROPOUTPUT}"
+    if [ "${automute}" = "automute_simple" ] ;then
+      # unmute as quickly as possible, and then check if we were wrong using the more elaborate approach
+      AD="0"
+	 ${automute}
+    fi
+
+    get_track_info
+  
+    # check if track paused
+    # debuginfo "$(get_pactl_info)"
+    if get_pactl_info | grep 'state: CORKED' > /dev/null 2>&1; then
+      # wait and recheck
+      sleep 0.75
+      if get_pactl_info | grep 'state: CORKED' > /dev/null 2>&1; then
+        echo "PAUSED:   Yes"
+        PAUSED="1"
+      fi
+      get_track_info
+    else
+      echo "PAUSED:   No"
+      PAUSED="0"
+    fi
+  
+    if [[ "$DBUS_TRACK" == "0" ]]; then
+      echo "AD:       Yes"
+      AD="1"
+    else
+      echo "AD:       No"
+      AD="0"
+    fi
   fi
 
   # check if local player running
@@ -244,7 +272,7 @@ get_state(){
 }
 
 get_pactl_nr(){
-    LC_ALL=C pacmd list-sink-inputs | awk -v binary="$BINARY" '
+    LC_ALL=C ${PACMD} list-sink-inputs | awk -v binary="$BINARY" '
             $1 == "index:" {idx = $2}
             $1 == "application.process.binary" && $3 == "\"" binary "\"" {print idx; exit}
         '
@@ -255,7 +283,8 @@ get_pactl_nr(){
 mute(){
     debuginfo "pactl: mute"
     for PACTLNR in $(get_pactl_nr); do
-      pactl set-sink-input-mute "$PACTLNR" yes > /dev/null 2>&1
+      #${PACTL} set-sink-input-mute "$PACTLNR" yes > /dev/null 2>&1
+      ${PACTL} set-sink-input-mute "$PACTLNR" yes 2>&1
       echo "## Muting sink $PACTLNR ##"
     done
     ADMUTE=1
@@ -264,7 +293,8 @@ mute(){
 unmute(){
     debuginfo "pactl: unmute"
     for PACTLNR in $(get_pactl_nr); do
-        pactl set-sink-input-mute "$PACTLNR" no > /dev/null 2>&1 ## unmute
+        #${PACTL} set-sink-input-mute "$PACTLNR" no > /dev/null 2>&1 ## unmute
+        ${PACTL} set-sink-input-mute "$PACTLNR" no 2>&1 ## unmute
         echo "## Unmuting sink $PACTLNR ##"
     done
     ADMUTE=0
@@ -408,9 +438,15 @@ automute_continuous(){
 
 automute_simple(){
     if [[ "$AD" = "0" ]]; then
-        unmute
+	   if [ "$ADMUTE" = "1" ] ;then
+          unmute
+		notify_send "Unmuted Spotify"
+        fi
     elif [[ "$AD" = "1" ]]; then
-        mute
+	   if [ "$ADMUTE" = "0" ] ;then
+          mute
+		notify_send "Muted Spotify ad"
+        fi
     fi
 }
 
