@@ -222,7 +222,17 @@ get_track_info(){
 }
 
 get_pactl_info(){
-  ${PACMD} list-sink-inputs | grep -B 25 "application.process.binary = \"$BINARY\""
+  ${PACMD} list-sink-inputs | grep -B 26 "application.process.binary = \"$BINARY\""
+}
+
+detect_paused() {
+  # there can be multiple Spotify sinks, so we should check if any of them are running;
+  # playback is paused effectively only when all instances are corked
+  STATES=$(get_pactl_info)
+  CORKED=$(echo "${STATES}" | fgrep 'state: CORKED')
+  RUNNING=$(echo "${STATES}" | fgrep 'state: RUNNING')
+  debuginfo "CORKED=\"${CORKED}\" RUNNING=\"${RUNNING}\""
+  [[ "${CORKED}" != "" && "${RUNNING}" = "" ]]
 }
 
 get_state(){
@@ -244,10 +254,10 @@ get_state(){
   
     # check if track paused
     # debuginfo "$(get_pactl_info)"
-    if get_pactl_info | grep 'state: CORKED' > /dev/null 2>&1; then
+    if detect_paused; then
       # wait and recheck
       sleep 0.75
-      if get_pactl_info | grep 'state: CORKED' > /dev/null 2>&1; then
+      if detect_paused; then
         echo "PAUSED:   Yes"
         PAUSED="1"
       fi
@@ -282,7 +292,7 @@ get_state(){
 get_pactl_nr(){
     LC_ALL=C ${PACMD} list-sink-inputs | awk -v binary="$BINARY" '
             $1 == "index:" {idx = $2}
-            $1 == "application.process.binary" && $3 == "\"" binary "\"" {print idx; exit}
+            $1 == "application.process.binary" && $3 == "\"" binary "\"" {print idx}
         '
     # awk script by Glenn Jackmann (http://askubuntu.com/users/10127/)
     # first posted on http://askubuntu.com/a/180661
